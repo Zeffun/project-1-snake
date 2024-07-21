@@ -19,7 +19,7 @@ for (let i = 0; i < gridSize * gridSize; i++) {
 
 
 /*---------------------------- Variables (state) ----------------------------*/
-let snakeHeadPosition = [0,0];
+let snakeHeadPosition = [10,-10];
 let snakeDirection = "";
 let movementIntervals;
 let currentCell;
@@ -33,6 +33,12 @@ let currentCell;
 function animateSnake() {
     currentCell = document.getElementById(snakeHeadPosition);
     currentCell.classList.add("snake");
+    const otherCells = document.querySelectorAll(".grid-item");
+    for(cell of otherCells) {
+        if(cell !== currentCell) {
+            cell.classList.remove("snake");
+        }
+    }
 };
 
 function moveSnake(e) {
@@ -44,47 +50,55 @@ function moveSnake(e) {
     switch (e.key) {
         case "ArrowLeft":
             // Left pressed
-            snakeDirection = "left";
-            console.log(snakeDirection);
-            clearInterval(movementIntervals);
-            movementIntervals = setInterval(function() {
-                snakeHeadPosition[0] = snakeHeadPosition[0] - 1;
-                console.log(snakeHeadPosition);
-                animateSnake();
-            }, 100);
+            if(snakeDirection !== "right") {
+                snakeDirection = "left";
+                console.log(snakeDirection);
+                clearInterval(movementIntervals);
+                movementIntervals = setInterval(function() {
+                    snakeHeadPosition[0] = snakeHeadPosition[0] - 1;
+                    console.log(snakeHeadPosition);
+                    animateSnake();
+                }, 100);
+            };
             break;
         case "ArrowRight":
             // Right pressed
-            snakeDirection = "right";
-            console.log(snakeDirection);
-            clearInterval(movementIntervals);
-            movementIntervals = setInterval(function() {
-                snakeHeadPosition[0] = snakeHeadPosition[0] + 1;
-                console.log(snakeHeadPosition);
-                animateSnake();
-            }, 100);
+            if(snakeDirection !== "left") {
+                snakeDirection = "right";
+                console.log(snakeDirection);
+                clearInterval(movementIntervals);
+                movementIntervals = setInterval(function() {
+                    snakeHeadPosition[0] = snakeHeadPosition[0] + 1;
+                    console.log(snakeHeadPosition);
+                    animateSnake();
+                }, 100);
+            };            
             break;
         case "ArrowUp":
             // Up pressed
-            snakeDirection = "up";
-            console.log(snakeDirection);
-            clearInterval(movementIntervals);
-            movementIntervals = setInterval(function() {
-                snakeHeadPosition[1] = snakeHeadPosition[1] + 1;
-                console.log(snakeHeadPosition);
-                animateSnake();
-            }, 100);
+            if(snakeDirection !== "down") {
+                snakeDirection = "up";
+                console.log(snakeDirection);
+                clearInterval(movementIntervals);
+                movementIntervals = setInterval(function() {
+                    snakeHeadPosition[1] = snakeHeadPosition[1] + 1;
+                    console.log(snakeHeadPosition);
+                    animateSnake();
+                }, 100);
+            };
             break;
         case "ArrowDown":
             // Down pressed
-            snakeDirection = "down";
-            console.log(snakeDirection);
-            clearInterval(movementIntervals);
-            movementIntervals = setInterval(function() {
-                snakeHeadPosition[1] = snakeHeadPosition[1] - 1;
-                console.log(snakeHeadPosition);
-                animateSnake();
-            }, 100);
+            if(snakeDirection !== "up") {
+                snakeDirection = "down";
+                console.log(snakeDirection);
+                clearInterval(movementIntervals);
+                movementIntervals = setInterval(function() {
+                    snakeHeadPosition[1] = snakeHeadPosition[1] - 1;
+                    console.log(snakeHeadPosition);
+                    animateSnake();
+                }, 100);
+            };
             break;
     };
 
