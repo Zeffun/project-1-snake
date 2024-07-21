@@ -25,16 +25,35 @@ let currentCell;
 let snakeSegmentPositions = [];
 let snakelength = 3;
 let gameOver = false;
+let foodPosition;
 
 /*------------------------ Cached Element References ------------------------*/
 const gameStartScreen = document.querySelector(".game-start");
 const gameOverScreen = document.querySelector(".game-over");
 const retryButton = document.querySelector("button");
+const scoreText = document.querySelector(".score");
 
 gameStartScreen.style.display = "initial";
 gameOverScreen.style.display = "none";
 
 /*-------------------------------- Functions --------------------------------*/
+function makeFoodAppear() {
+    //make food appear at random coordinates
+    const allCells = document.querySelectorAll(".grid-item");
+    let randomCellIndex = Math.floor(Math.random() * allCells.length);
+    allCells[randomCellIndex].classList.add("food");
+    foodPosition = allCells[randomCellIndex].id;
+    console.log(foodPosition);
+    //remove previous foods
+    for(cell of allCells) {
+        if(cell.id !== foodPosition) {
+            cell.classList.remove("food");
+        }
+    };
+};
+
+makeFoodAppear();
+
 function resetGame() {
     //reset the key variables
     snakeHeadPosition = [10,-10];
@@ -42,11 +61,11 @@ function resetGame() {
     clearInterval(movementIntervals);
     currentCell = [10,-10];
     snakeSegmentPositions = [];
-    snakelength = 10;
+    snakelength = 3;
     gameOver = false;
     //clear the gameScreen visually
-    const otherCells = document.querySelectorAll(".grid-item");
-    for(cell of otherCells) {
+    const allCells = document.querySelectorAll(".grid-item");
+    for(cell of allCells) {
         cell.classList.remove("snake");
     };
     //show the start screen and hide the game over screen
@@ -60,6 +79,7 @@ function setGameOver() {
     gameOver = true;
     gameStartScreen.style.display = "none";
     gameOverScreen.style.display = "initial";
+    scoreText.textContent = `Your score: ${snakelength - 3}`;
 }
 
 function animateSnake() {
@@ -89,9 +109,19 @@ function animateSnake() {
             if(segment.id === snakeHeadPosition.toString()) {
                 //gameover
                 setGameOver();
-            }
+            };
+            
         };
-        // console.log(snakeHeadPosition);
+
+        if(foodPosition === snakeHeadPosition.toString()) {
+            makeFoodAppear();
+            snakelength++;
+        }
+        //check for collisions with food
+        // if( === snakeHeadPosition.toString()) {
+        //     //gameover
+        //     setGameOver();
+        // }
     }
     
     
