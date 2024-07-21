@@ -1,6 +1,6 @@
 /*-------------------------------- Constants --------------------------------*/
 const gridContainer = document.getElementById('gridContainer');
-const gridSize = 20;
+const gridSize = 30;
 const cells = [];
 
 
@@ -23,22 +23,35 @@ let snakeHeadPosition = [10,-10];
 let snakeDirection = "";
 let movementIntervals;
 let currentCell;
+let snakeSegmentPositions = [];
+let snakelength = 20;
 
 /*------------------------ Cached Element References ------------------------*/
 
 
 /*-------------------------------- Functions --------------------------------*/
-
+function checkCollision() {
+    if(snakeHeadPosition[0] < 0 || 
+        snakeHeadPosition[0] > 19|| 
+        snakeHeadPosition[1] > 0 ||
+        snakeHeadPosition[1] < -19) {
+            console.log("Game Over");
+        };
+};
 
 function animateSnake() {
     currentCell = document.getElementById(snakeHeadPosition);
     currentCell.classList.add("snake");
+    snakeSegmentPositions.unshift(currentCell);
     const otherCells = document.querySelectorAll(".grid-item");
+    snakeSegmentPositions = snakeSegmentPositions.slice(0, snakelength);
     for(cell of otherCells) {
-        if(cell !== currentCell) {
+        if(snakeSegmentPositions.includes(cell)) {
+            cell.classList.add("snake");
+        } else {
             cell.classList.remove("snake");
         }
-    }
+    };
 };
 
 function moveSnake(e) {
@@ -52,11 +65,9 @@ function moveSnake(e) {
             // Left pressed
             if(snakeDirection !== "right") {
                 snakeDirection = "left";
-                console.log(snakeDirection);
                 clearInterval(movementIntervals);
                 movementIntervals = setInterval(function() {
                     snakeHeadPosition[0] = snakeHeadPosition[0] - 1;
-                    console.log(snakeHeadPosition);
                     animateSnake();
                 }, 100);
             };
@@ -65,11 +76,9 @@ function moveSnake(e) {
             // Right pressed
             if(snakeDirection !== "left") {
                 snakeDirection = "right";
-                console.log(snakeDirection);
                 clearInterval(movementIntervals);
                 movementIntervals = setInterval(function() {
                     snakeHeadPosition[0] = snakeHeadPosition[0] + 1;
-                    console.log(snakeHeadPosition);
                     animateSnake();
                 }, 100);
             };            
@@ -78,11 +87,9 @@ function moveSnake(e) {
             // Up pressed
             if(snakeDirection !== "down") {
                 snakeDirection = "up";
-                console.log(snakeDirection);
                 clearInterval(movementIntervals);
                 movementIntervals = setInterval(function() {
                     snakeHeadPosition[1] = snakeHeadPosition[1] + 1;
-                    console.log(snakeHeadPosition);
                     animateSnake();
                 }, 100);
             };
@@ -91,11 +98,9 @@ function moveSnake(e) {
             // Down pressed
             if(snakeDirection !== "up") {
                 snakeDirection = "down";
-                console.log(snakeDirection);
                 clearInterval(movementIntervals);
                 movementIntervals = setInterval(function() {
                     snakeHeadPosition[1] = snakeHeadPosition[1] - 1;
-                    console.log(snakeHeadPosition);
                     animateSnake();
                 }, 100);
             };
@@ -121,6 +126,8 @@ function moveSnake(e) {
         //while loop for while snakeDirection === "right", the x coordinates increase by 1 at regular intervals
 
 }
+
+checkCollision();
 
 /*----------------------------- Event Listeners -----------------------------*/
 document.addEventListener('keydown', moveSnake);
