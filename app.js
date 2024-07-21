@@ -1,14 +1,39 @@
 /*-------------------------------- Constants --------------------------------*/
+const gridContainer = document.getElementById('gridContainer');
+const gridSize = 20;
+const cells = [];
+
+
+// Initialize the grid
+for (let i = 0; i < gridSize * gridSize; i++) {
+    const cell = document.createElement('div');
+    cell.classList.add('grid-item');
+    cell.id = [i - (gridSize * Math.floor(i/gridSize)), -Math.floor(i/gridSize)];
+    gridContainer.appendChild(cell);
+    cells.push(cell);
+}
+
+//for each div grid that I add into the gridContainer div, I want to give it an additional class which will contain its 
+//coordinates starting from (0,0), then everytime it reaches gridSize (i.e 20) on the x-axis, I restart the x-coordinates and add 1 to the y coordinates until I reach y = gridSize (i.e 20)
+
+
 
 /*---------------------------- Variables (state) ----------------------------*/
 let snakeHeadPosition = [0,0];
 let snakeDirection = "";
 let movementIntervals;
+let currentCell;
 
 /*------------------------ Cached Element References ------------------------*/
 
 
 /*-------------------------------- Functions --------------------------------*/
+
+
+function animateSnake() {
+    currentCell = document.getElementById(snakeHeadPosition);
+    currentCell.classList.add("snake");
+};
 
 function moveSnake(e) {
     const key = e.key; // "ArrowRight", "ArrowLeft", "ArrowUp", or "ArrowDown"
@@ -25,7 +50,8 @@ function moveSnake(e) {
             movementIntervals = setInterval(function() {
                 snakeHeadPosition[0] = snakeHeadPosition[0] - 1;
                 console.log(snakeHeadPosition);
-            }, 500);
+                animateSnake();
+            }, 100);
             break;
         case "ArrowRight":
             // Right pressed
@@ -35,7 +61,8 @@ function moveSnake(e) {
             movementIntervals = setInterval(function() {
                 snakeHeadPosition[0] = snakeHeadPosition[0] + 1;
                 console.log(snakeHeadPosition);
-            }, 500);
+                animateSnake();
+            }, 100);
             break;
         case "ArrowUp":
             // Up pressed
@@ -45,7 +72,8 @@ function moveSnake(e) {
             movementIntervals = setInterval(function() {
                 snakeHeadPosition[1] = snakeHeadPosition[1] + 1;
                 console.log(snakeHeadPosition);
-            }, 500);
+                animateSnake();
+            }, 100);
             break;
         case "ArrowDown":
             // Down pressed
@@ -55,7 +83,8 @@ function moveSnake(e) {
             movementIntervals = setInterval(function() {
                 snakeHeadPosition[1] = snakeHeadPosition[1] - 1;
                 console.log(snakeHeadPosition);
-            }, 500);
+                animateSnake();
+            }, 100);
             break;
     };
 
@@ -63,7 +92,7 @@ function moveSnake(e) {
     //     setTimeout(function() {
     //         snakeHeadPosition[0] = snakeHeadPosition[0] - 1;
     //         console.log(snakeHeadPosition);
-    //     }, 500);
+    //     }, 100);
         
     // };
 
