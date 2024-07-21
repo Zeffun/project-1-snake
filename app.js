@@ -17,41 +17,86 @@ for (let i = 0; i < gridSize * gridSize; i++) {
 //coordinates starting from (0,0), then everytime it reaches gridSize (i.e 20) on the x-axis, I restart the x-coordinates and add 1 to the y coordinates until I reach y = gridSize (i.e 20)
 
 
-
 /*---------------------------- Variables (state) ----------------------------*/
 let snakeHeadPosition = [10,-10];
 let snakeDirection = "";
 let movementIntervals;
 let currentCell;
 let snakeSegmentPositions = [];
-let snakelength = 20;
+let snakelength = 3;
+let gameOver = false;
 
 /*------------------------ Cached Element References ------------------------*/
+const gameStartScreen = document.querySelector(".game-start");
+const gameOverScreen = document.querySelector(".game-over");
+const retryButton = document.querySelector("button");
 
+gameStartScreen.style.display = "initial";
+gameOverScreen.style.display = "none";
 
 /*-------------------------------- Functions --------------------------------*/
-function checkCollision() {
-    if(snakeHeadPosition[0] < 0 || 
-        snakeHeadPosition[0] > 19|| 
-        snakeHeadPosition[1] > 0 ||
-        snakeHeadPosition[1] < -19) {
-            console.log("Game Over");
-        };
-};
+function resetGame() {
+    //reset the key variables
+    snakeHeadPosition = [10,-10];
+    snakeDirection = "";
+    clearInterval(movementIntervals);
+    currentCell = [10,-10];
+    snakeSegmentPositions = [];
+    snakelength = 10;
+    gameOver = false;
+    //clear the gameScreen visually
+    const otherCells = document.querySelectorAll(".grid-item");
+    for(cell of otherCells) {
+        cell.classList.remove("snake");
+    };
+    //show the start screen and hide the game over screen
+    gameStartScreen.style.display = "initial";
+    gameOverScreen.style.display = "none";
+}
+
+function setGameOver() {
+    clearInterval(movementIntervals);
+    console.log("Game Over");
+    gameOver = true;
+    gameStartScreen.style.display = "none";
+    gameOverScreen.style.display = "initial";
+}
 
 function animateSnake() {
-    currentCell = document.getElementById(snakeHeadPosition);
-    currentCell.classList.add("snake");
-    snakeSegmentPositions.unshift(currentCell);
-    const otherCells = document.querySelectorAll(".grid-item");
-    snakeSegmentPositions = snakeSegmentPositions.slice(0, snakelength);
-    for(cell of otherCells) {
-        if(snakeSegmentPositions.includes(cell)) {
-            cell.classList.add("snake");
-        } else {
-            cell.classList.remove("snake");
-        }
-    };
+    //check for collisions with boundaries
+    if(snakeHeadPosition[0] < 0 || 
+        snakeHeadPosition[0] > (gridSize - 1)|| 
+        snakeHeadPosition[1] > 0 ||
+        snakeHeadPosition[1] < -(gridSize - 1)) {
+            //gameover
+            setGameOver();
+    } else {
+        //create the snake trailing animation
+        currentCell = document.getElementById(snakeHeadPosition);
+        currentCell.classList.add("snake");
+        snakeSegmentPositions.unshift(currentCell);
+        const otherCells = document.querySelectorAll(".grid-item");
+        snakeSegmentPositions = snakeSegmentPositions.slice(0, snakelength);
+        for(cell of otherCells) {
+            if(snakeSegmentPositions.includes(cell)) {
+                cell.classList.add("snake");
+            } else {
+                cell.classList.remove("snake");
+            }
+        };
+        //check for collisions with own body
+        for(segment of snakeSegmentPositions.slice(1)) {
+            if(segment.id === snakeHeadPosition.toString()) {
+                //gameover
+                setGameOver();
+            }
+        };
+        // console.log(snakeHeadPosition);
+    }
+    
+    
+    
+
 };
 
 function moveSnake(e) {
@@ -59,52 +104,55 @@ function moveSnake(e) {
     //when up is pressed:
         //set snakeDirection = "up"
         //while loop for while snakeDirection === "up", the y coordinates increase by 1 at regular intervals
+    if(!gameOver) {
+        switch (e.key) {
+            case "ArrowLeft":
+                // Left pressed
+                if(snakeDirection !== "right") {
+                    snakeDirection = "left";
+                    clearInterval(movementIntervals);
+                    movementIntervals = setInterval(function() {
+                        snakeHeadPosition[0] = snakeHeadPosition[0] - 1;
+                        animateSnake();
+                        
+                    }, 100);
+                };
+                break;
+            case "ArrowRight":
+                // Right pressed
+                if(snakeDirection !== "left") {
+                    snakeDirection = "right";
+                    clearInterval(movementIntervals);
+                    movementIntervals = setInterval(function() {
+                        snakeHeadPosition[0] = snakeHeadPosition[0] + 1;
+                        animateSnake();
+                    }, 100);
+                };            
+                break;
+            case "ArrowUp":
+                // Up pressed
+                if(snakeDirection !== "down") {
+                    snakeDirection = "up";
+                    clearInterval(movementIntervals);
+                    movementIntervals = setInterval(function() {
+                        snakeHeadPosition[1] = snakeHeadPosition[1] + 1;
+                        animateSnake();
+                    }, 100);
+                };
+                break;
+            case "ArrowDown":
+                // Down pressed
+                if(snakeDirection !== "up") {
+                    snakeDirection = "down";
+                    clearInterval(movementIntervals);
+                    movementIntervals = setInterval(function() {
+                        snakeHeadPosition[1] = snakeHeadPosition[1] - 1;
+                        animateSnake();
+                    }, 100);
+                };
+                break;
+        };
     
-    switch (e.key) {
-        case "ArrowLeft":
-            // Left pressed
-            if(snakeDirection !== "right") {
-                snakeDirection = "left";
-                clearInterval(movementIntervals);
-                movementIntervals = setInterval(function() {
-                    snakeHeadPosition[0] = snakeHeadPosition[0] - 1;
-                    animateSnake();
-                }, 100);
-            };
-            break;
-        case "ArrowRight":
-            // Right pressed
-            if(snakeDirection !== "left") {
-                snakeDirection = "right";
-                clearInterval(movementIntervals);
-                movementIntervals = setInterval(function() {
-                    snakeHeadPosition[0] = snakeHeadPosition[0] + 1;
-                    animateSnake();
-                }, 100);
-            };            
-            break;
-        case "ArrowUp":
-            // Up pressed
-            if(snakeDirection !== "down") {
-                snakeDirection = "up";
-                clearInterval(movementIntervals);
-                movementIntervals = setInterval(function() {
-                    snakeHeadPosition[1] = snakeHeadPosition[1] + 1;
-                    animateSnake();
-                }, 100);
-            };
-            break;
-        case "ArrowDown":
-            // Down pressed
-            if(snakeDirection !== "up") {
-                snakeDirection = "down";
-                clearInterval(movementIntervals);
-                movementIntervals = setInterval(function() {
-                    snakeHeadPosition[1] = snakeHeadPosition[1] - 1;
-                    animateSnake();
-                }, 100);
-            };
-            break;
     };
 
     // while (snakeDirection === "left") {
@@ -127,10 +175,11 @@ function moveSnake(e) {
 
 }
 
-checkCollision();
+
 
 /*----------------------------- Event Listeners -----------------------------*/
 document.addEventListener('keydown', moveSnake);
+retryButton.addEventListener("click", resetGame);
 
 
 //when I press an arrow key, I want the snake to move 1 step in that arrow key direction continually
