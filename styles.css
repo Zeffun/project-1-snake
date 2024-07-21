@@ -1,6 +1,12 @@
 body {
     background-color: sandybrown;
     display: grid;
-    grid-template-rows: 1fr 1fr 1fr 1fr 1fr;
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    grid-template-rows: 20px 20px 20px 20px 20px;
+    grid-template-columns: 20px 20px 20px 20px 20px;
+}
+
+.snake {
+    background-color: green;
+    grid-column: span 1;
+    grid-row: span 1;
 }
