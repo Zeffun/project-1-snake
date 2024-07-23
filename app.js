@@ -1,6 +1,6 @@
 /*-------------------------------- Constants --------------------------------*/
 const gridContainer = document.getElementById('gridContainer');
-const gridSize = 30;
+const gridSize = 35;
 const cells = [];
 const eatFoodSFX = new Audio("./eatFoodSFX.wav");
 const loseSFX = new Audio("./loseSFX.wav");
