@@ -4,6 +4,7 @@ const gridSize = 35;
 const cells = [];
 const eatFoodSFX = new Audio("./eatFoodSFX.wav");
 const loseSFX = new Audio("./loseSFX.wav");
+const backgroundSFX = new Audio("./backgroundSFX.mp3");
 
 // Initialize the grid
 for (let i = 0; i < gridSize * gridSize; i++) {
@@ -39,6 +40,8 @@ gameStartScreen.style.display = "initial";
 gameOverScreen.style.display = "none";
 
 /*-------------------------------- Functions --------------------------------*/
+
+
 function makeFoodAppear() {
     //make food appear at random coordinates
     const allCells = document.querySelectorAll(".grid-item");
@@ -95,6 +98,8 @@ function animateSnake() {
             //gameover
             setGameOver();
             loseSFX.play();
+            backgroundSFX.pause();
+            backgroundSFX.currentTime = 0;
     } else {
         //create the snake trailing animation
         currentCell = document.getElementById(snakeHeadPosition);
@@ -115,6 +120,8 @@ function animateSnake() {
                 //gameover
                 setGameOver();
                 loseSFX.play();
+                backgroundSFX.pause();
+                backgroundSFX.currentTime = 0;
             };
             
         };
@@ -139,6 +146,7 @@ function moveSnake(e) {
     //when player first presses an arrow key, remove the start screen
     if(key === "ArrowLeft" || key === "ArrowRight" || key === "ArrowUp" || key === "ArrowDown") {
         gameStartScreen.style.display = "none";
+        backgroundSFX.play();
     }
     
     //when up is pressed:
