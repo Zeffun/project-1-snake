@@ -24,6 +24,7 @@ let movementIntervals;
 let currentCell;
 let snakeSegmentPositions = [];
 let snakelength = 3;
+let snakeFrameRate = 100;
 let gameOver = false;
 let foodPosition;
 
@@ -140,46 +141,53 @@ function moveSnake(e) {
                 // Left pressed
                 if(snakeDirection !== "right") { //this prevents the snake from reversing
                     snakeDirection = "left";
+                    snakeHeadPosition[0]--;
+                    animateSnake();
                     clearInterval(movementIntervals);
                     movementIntervals = setInterval(function() {
                         snakeHeadPosition[0] = snakeHeadPosition[0] - 1;
                         animateSnake();
                         
-                    }, 100);
+                    }, snakeFrameRate);
                 };
                 break;
             case "ArrowRight":
                 // Right pressed
                 if(snakeDirection !== "left") { //this prevents the snake from reversing
                     snakeDirection = "right";
+                    snakeHeadPosition[0]++;
+                    animateSnake();
                     clearInterval(movementIntervals);
                     movementIntervals = setInterval(function() {
                         snakeHeadPosition[0] = snakeHeadPosition[0] + 1;
                         animateSnake();
-                    }, 100);
+                    }, snakeFrameRate);
                 };            
                 break;
             case "ArrowUp":
                 // Up pressed
                 if(snakeDirection !== "down") { //this prevents the snake from reversing
                     snakeDirection = "up";
+                    snakeHeadPosition[1]++;
+                    animateSnake();
                     clearInterval(movementIntervals);
                     movementIntervals = setInterval(function() {
                         snakeHeadPosition[1] = snakeHeadPosition[1] + 1;
                         animateSnake();
-                    }, 100);
+                    }, snakeFrameRate);
                 };
                 break;
             case "ArrowDown":
                 // Down pressed
                 if(snakeDirection !== "up") { //this prevents the snake from reversing
                     snakeDirection = "down";
+                    snakeHeadPosition[1]--;
+                    animateSnake();
                     clearInterval(movementIntervals);
-                    
                     movementIntervals = setInterval(function() {
                         snakeHeadPosition[1] = snakeHeadPosition[1] - 1;
                         animateSnake();
-                    }, 100);
+                    }, snakeFrameRate);
                 };
                 break;
         };
