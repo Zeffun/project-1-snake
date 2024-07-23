@@ -143,16 +143,17 @@ function animateSnake() {
 function moveSnake(e) {
     const key = e.key; // "ArrowRight", "ArrowLeft", "ArrowUp", or "ArrowDown"
     
-    //when player first presses an arrow key, remove the start screen
-    if(key === "ArrowLeft" || key === "ArrowRight" || key === "ArrowUp" || key === "ArrowDown") {
-        gameStartScreen.style.display = "none";
-        backgroundSFX.play();
-    }
+    
     
     //when up is pressed:
         //set snakeDirection = "up"
         //while loop for while snakeDirection === "up", the y coordinates increase by 1 at regular intervals
     if(!gameOver) {
+        //when player first presses an arrow key, remove the start screen
+        if(key === "ArrowLeft" || key === "ArrowRight" || key === "ArrowUp" || key === "ArrowDown") {
+            gameStartScreen.style.display = "none";
+            backgroundSFX.play();
+        }
         switch (e.key) {
             case "ArrowLeft":
                 // Left pressed
