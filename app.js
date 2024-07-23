@@ -120,6 +120,8 @@ function animateSnake() {
         if(foodPosition === snakeHeadPosition.toString()) {
             makeFoodAppear();
             snakelength++;
+            eatFoodSFX.pause(); //this and the next line fixes the audio bug where new audio doesn't play if old audio is still playing (found solution on stack overflow, still need to figure out how it works)
+            eatFoodSFX.currentTime = 0;
             eatFoodSFX.play();
         };
     };
