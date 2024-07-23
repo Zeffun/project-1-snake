@@ -35,13 +35,13 @@ body {
 .grid-item {
     width: 20px;
     height: 20px;
-    background-color: sandybrown;
+    background-color: rebeccapurple;
 }
 
 .food {
-    background-color: red;
+    background-color: goldenrod;
 }
 
 .snake {
-    background-color: green;
+    background-color: lightgreen;
 }
