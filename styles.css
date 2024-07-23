@@ -41,6 +41,7 @@ button {
     z-index: 2;
     justify-content: center;
     color: white;
+    text-align: center;
 }
 
 .game-over {
@@ -49,6 +50,7 @@ button {
     z-index: 2;
     justify-content: center;
     color: white;
+    text-align: center;
 }
 
 .grid-container {
