@@ -56,6 +56,8 @@ function makeFoodAppear() {
 
 makeFoodAppear();
 
+
+
 function resetGame() {
     //reset the key variables
     snakeHeadPosition = [10,-10];
@@ -133,6 +135,12 @@ function animateSnake() {
 
 function moveSnake(e) {
     const key = e.key; // "ArrowRight", "ArrowLeft", "ArrowUp", or "ArrowDown"
+    
+    //when player first presses an arrow key, remove the start screen
+    if(key === "ArrowLeft" || key === "ArrowRight" || key === "ArrowUp" || key === "ArrowDown") {
+        gameStartScreen.style.display = "none";
+    }
+    
     //when up is pressed:
         //set snakeDirection = "up"
         //while loop for while snakeDirection === "up", the y coordinates increase by 1 at regular intervals
@@ -141,6 +149,7 @@ function moveSnake(e) {
             case "ArrowLeft":
                 // Left pressed
                 if(snakeDirection !== "right") { //this prevents the snake from reversing
+                    
                     snakeDirection = "left";
                     snakeHeadPosition[0]--;
                     animateSnake();
