@@ -2,7 +2,8 @@
 const gridContainer = document.getElementById('gridContainer');
 const gridSize = 30;
 const cells = [];
-
+const eatFoodSFX = new Audio("./eatFoodSFX.wav");
+const loseSFX = new Audio("./loseSFX.wav");
 
 // Initialize the grid
 for (let i = 0; i < gridSize * gridSize; i++) {
@@ -91,6 +92,7 @@ function animateSnake() {
         snakeHeadPosition[1] < -(gridSize - 1)) {
             //gameover
             setGameOver();
+            loseSFX.play();
     } else {
         //create the snake trailing animation
         currentCell = document.getElementById(snakeHeadPosition);
@@ -103,27 +105,24 @@ function animateSnake() {
                 cell.classList.add("snake");
             } else {
                 cell.classList.remove("snake");
-            }
+            };
         };
         //check for collisions with own body
         for(segment of snakeSegmentPositions.slice(1)) {
             if(segment.id === snakeHeadPosition.toString()) {
                 //gameover
                 setGameOver();
+                loseSFX.play();
             };
             
         };
-
+        //check for collisions with food
         if(foodPosition === snakeHeadPosition.toString()) {
             makeFoodAppear();
             snakelength++;
-        }
-        //check for collisions with food
-        // if( === snakeHeadPosition.toString()) {
-        //     //gameover
-        //     setGameOver();
-        // }
-    }
+            eatFoodSFX.play();
+        };
+    };
     
     
     
