@@ -79,7 +79,7 @@ function setGameOver() {
     gameOver = true;
     gameStartScreen.style.display = "none";
     gameOverScreen.style.display = "initial";
-    scoreText.textContent = `Your score: ${snakelength - 3}`;
+    scoreText.textContent = `Your score: ${(snakelength - 3) * 100}`;
 }
 
 function animateSnake() {
@@ -138,7 +138,7 @@ function moveSnake(e) {
         switch (e.key) {
             case "ArrowLeft":
                 // Left pressed
-                if(snakeDirection !== "right") {
+                if(snakeDirection !== "right") { //this prevents the snake from reversing
                     snakeDirection = "left";
                     clearInterval(movementIntervals);
                     movementIntervals = setInterval(function() {
@@ -150,7 +150,7 @@ function moveSnake(e) {
                 break;
             case "ArrowRight":
                 // Right pressed
-                if(snakeDirection !== "left") {
+                if(snakeDirection !== "left") { //this prevents the snake from reversing
                     snakeDirection = "right";
                     clearInterval(movementIntervals);
                     movementIntervals = setInterval(function() {
@@ -161,7 +161,7 @@ function moveSnake(e) {
                 break;
             case "ArrowUp":
                 // Up pressed
-                if(snakeDirection !== "down") {
+                if(snakeDirection !== "down") { //this prevents the snake from reversing
                     snakeDirection = "up";
                     clearInterval(movementIntervals);
                     movementIntervals = setInterval(function() {
@@ -172,9 +172,10 @@ function moveSnake(e) {
                 break;
             case "ArrowDown":
                 // Down pressed
-                if(snakeDirection !== "up") {
+                if(snakeDirection !== "up") { //this prevents the snake from reversing
                     snakeDirection = "down";
                     clearInterval(movementIntervals);
+                    
                     movementIntervals = setInterval(function() {
                         snakeHeadPosition[1] = snakeHeadPosition[1] - 1;
                         animateSnake();
