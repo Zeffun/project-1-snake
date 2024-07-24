@@ -7,6 +7,8 @@ const loseSFX = new Audio("./loseSFX.wav");
 const backgroundSFX = new Audio("./backgroundSFX.mp3");
 const turnHorizontalSFX = new Audio("./turnHorizontalSFX.mp3");
 const turnVerticalSFX = new Audio("./turnVerticalSFX.mp3");
+turnHorizontalSFX.volume = 0.3;
+turnVerticalSFX.volume = 0.3;
 
 // Initialize the grid
 for (let i = 0; i < gridSize * gridSize; i++) {
