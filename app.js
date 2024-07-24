@@ -81,9 +81,9 @@ function resetGame() {
 }
 
 function setGameOver() {
+    gameOver = true;
     clearInterval(movementIntervals);
     console.log("Game Over");
-    gameOver = true;
     gameStartScreen.style.display = "none";
     gameOverScreen.style.display = "initial";
     scoreText.textContent = `Your score: ${(snakelength - 3) * 100}`;
@@ -118,6 +118,8 @@ function animateSnake() {
         for(segment of snakeSegmentPositions.slice(1)) {
             if(segment.id === snakeHeadPosition.toString()) {
                 //gameover
+                clearInterval(movementIntervals);
+                movementIntervals = "";
                 setGameOver();
                 loseSFX.play();
                 backgroundSFX.pause();
@@ -142,9 +144,6 @@ function animateSnake() {
 
 function moveSnake(e) {
     const key = e.key; // "ArrowRight", "ArrowLeft", "ArrowUp", or "ArrowDown"
-    
-    
-    
     //when up is pressed:
         //set snakeDirection = "up"
         //while loop for while snakeDirection === "up", the y coordinates increase by 1 at regular intervals
