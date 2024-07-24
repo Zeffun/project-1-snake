@@ -157,7 +157,7 @@ function moveSnake(e) {
         switch (e.key) {
             case "ArrowLeft":
                 // Left pressed
-                if(snakeDirection !== "right") { //this prevents the snake from reversing
+                if(snakeDirection !== "right" && snakeDirection !== "left") { //this prevents the snake from reversing
                     snakeDirection = "left";
                     snakeHeadPosition[0]--;
                     animateSnake();
@@ -174,7 +174,7 @@ function moveSnake(e) {
                 break;
             case "ArrowRight":
                 // Right pressed
-                if(snakeDirection !== "left") { //this prevents the snake from reversing
+                if(snakeDirection !== "left" && snakeDirection !== "right") { //this prevents the snake from reversing
                     snakeDirection = "right";
                     snakeHeadPosition[0]++;
                     animateSnake();
@@ -190,7 +190,7 @@ function moveSnake(e) {
                 break;
             case "ArrowUp":
                 // Up pressed
-                if(snakeDirection !== "down") { //this prevents the snake from reversing
+                if(snakeDirection !== "down" && snakeDirection !== "up") { //this prevents the snake from reversing
                     snakeDirection = "up";
                     snakeHeadPosition[1]++;
                     animateSnake();
@@ -206,7 +206,7 @@ function moveSnake(e) {
                 break;
             case "ArrowDown":
                 // Down pressed
-                if(snakeDirection !== "up") { //this prevents the snake from reversing
+                if(snakeDirection !== "up" && snakeDirection !== "down") { //this prevents the snake from reversing
                     snakeDirection = "down";
                     snakeHeadPosition[1]--;
                     animateSnake();
