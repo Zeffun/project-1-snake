@@ -5,6 +5,8 @@ const cells = [];
 const eatFoodSFX = new Audio("./eatFoodSFX.wav");
 const loseSFX = new Audio("./loseSFX.wav");
 const backgroundSFX = new Audio("./backgroundSFX.mp3");
+const turnHorizontalSFX = new Audio("./turnHorizontalSFX.mp3");
+const turnVerticalSFX = new Audio("./turnVerticalSFX.mp3");
 
 // Initialize the grid
 for (let i = 0; i < gridSize * gridSize; i++) {
@@ -117,9 +119,8 @@ function animateSnake() {
         //check for collisions with own body
         for(segment of snakeSegmentPositions.slice(1)) {
             if(segment.id === snakeHeadPosition.toString()) {
-                //gameover
+                //gameover 
                 clearInterval(movementIntervals);
-                movementIntervals = "";
                 setGameOver();
                 loseSFX.play();
                 backgroundSFX.pause();
@@ -157,7 +158,6 @@ function moveSnake(e) {
             case "ArrowLeft":
                 // Left pressed
                 if(snakeDirection !== "right") { //this prevents the snake from reversing
-                    
                     snakeDirection = "left";
                     snakeHeadPosition[0]--;
                     animateSnake();
@@ -167,6 +167,9 @@ function moveSnake(e) {
                         animateSnake();
                         
                     }, snakeFrameRate);
+                    turnVerticalSFX.pause(); //this and the next line fixes the audio bug where new audio doesn't play if old audio is still playing (found solution on stack overflow, still need to figure out how it works)
+                    turnVerticalSFX.currentTime = 0;
+                    turnHorizontalSFX.play();
                 };
                 break;
             case "ArrowRight":
@@ -180,6 +183,9 @@ function moveSnake(e) {
                         snakeHeadPosition[0] = snakeHeadPosition[0] + 1;
                         animateSnake();
                     }, snakeFrameRate);
+                    turnVerticalSFX.pause(); //this and the next line fixes the audio bug where new audio doesn't play if old audio is still playing (found solution on stack overflow, still need to figure out how it works)
+                    turnVerticalSFX.currentTime = 0;
+                    turnHorizontalSFX.play();
                 };            
                 break;
             case "ArrowUp":
@@ -193,6 +199,9 @@ function moveSnake(e) {
                         snakeHeadPosition[1] = snakeHeadPosition[1] + 1;
                         animateSnake();
                     }, snakeFrameRate);
+                    turnHorizontalSFX.pause(); //this and the next line fixes the audio bug where new audio doesn't play if old audio is still playing (found solution on stack overflow, still need to figure out how it works)
+                    turnHorizontalSFX.currentTime = 0;
+                    turnVerticalSFX.play();
                 };
                 break;
             case "ArrowDown":
@@ -206,6 +215,9 @@ function moveSnake(e) {
                         snakeHeadPosition[1] = snakeHeadPosition[1] - 1;
                         animateSnake();
                     }, snakeFrameRate);
+                    turnHorizontalSFX.pause(); //this and the next line fixes the audio bug where new audio doesn't play if old audio is still playing (found solution on stack overflow, still need to figure out how it works)
+                    turnHorizontalSFX.currentTime = 0;
+                    turnVerticalSFX.play();
                 };
                 break;
         };
