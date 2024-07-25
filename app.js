@@ -1,7 +1,9 @@
-/*-------------------------------- Constants --------------------------------*/
+/*-------------------------------- Variables & Initialisations--------------------------------*/
+//Grid 
 const gridContainer = document.getElementById('gridContainer');
 const gridSize = 35;
 const cells = [];
+//SFX
 const eatFoodSFX = new Audio("./eatFoodSFX.wav");
 const loseSFX = new Audio("./loseSFX.wav");
 const backgroundSFX = new Audio("./backgroundSFX.mp3");
@@ -9,51 +11,55 @@ const turnHorizontalSFX = new Audio("./turnHorizontalSFX.mp3");
 const turnVerticalSFX = new Audio("./turnVerticalSFX.mp3");
 turnHorizontalSFX.volume = 0.3;
 turnVerticalSFX.volume = 0.3;
-
-// Initialize the grid
-for (let i = 0; i < gridSize * gridSize; i++) {
-    const cell = document.createElement('div');
-    cell.classList.add('grid-item');
-    cell.id = [i - (gridSize * Math.floor(i/gridSize)), -Math.floor(i/gridSize)];
-    gridContainer.appendChild(cell);
-    cells.push(cell);
-}
-
-//for each div grid that I add into the gridContainer div, I want to give it an additional class which will contain its 
-//coordinates starting from (0,0), then everytime it reaches gridSize (i.e 20) on the x-axis, I restart the x-coordinates and add 1 to the y coordinates until I reach y = gridSize (i.e 20)
-
-
-/*---------------------------- Variables (state) ----------------------------*/
+//Gameplay
 let snakeHeadPosition = [10,-10];
 let snakeDirection = "";
 let movementIntervals;
 let currentCell;
 let snakeSegmentPositions = [];
-let snakelength = 3;
+const snakeStartingLength = 3;
+const scoreMultipler = 100;
+let snakelength = snakeStartingLength;
 let snakeFrameRate = 100;
 let gameOver = false;
 let foodPosition;
-
-/*------------------------ Cached Element References ------------------------*/
+//Cached Element References
 const gameStartScreen = document.querySelector(".game-start");
 const gameOverScreen = document.querySelector(".game-over");
 const retryButton = document.querySelector("button");
 const scoreText = document.querySelector(".score");
-
 gameStartScreen.style.display = "initial";
 gameOverScreen.style.display = "none";
 
-/*-------------------------------- Functions --------------------------------*/
+/*-------------------------------- Functions and Function Calls --------------------------------*/
+//Create the game grid
+function createGameGrid() {
+    for (let i = 0; i < gridSize * gridSize; i++) {
+        const cell = document.createElement('div');
+        cell.classList.add('grid-item');
+        cell.id = [i - (gridSize * Math.floor(i/gridSize)), -Math.floor(i/gridSize)];
+        gridContainer.appendChild(cell);
+        cells.push(cell);
+    };
+};
 
+createGameGrid(); //Call the grid-creating function at the start so that the grid is drawn
 
+//Make food appear at a random grid cell
 function makeFoodAppear() {
-    //make food appear at random coordinates
+    //Setting the random position of the food
     const allCells = document.querySelectorAll(".grid-item");
     let randomCellIndex = Math.floor(Math.random() * allCells.length);
+    //Ensure that the food does not appear at the same cell as the snake
+    for(segment of snakeSegmentPositions) {
+        while(segment === allCells[randomCellIndex]) {
+            randomCellIndex = Math.floor(Math.random() * allCells.length);
+        };
+    };
+    //If the randomised cell position doesn't overlap with where the snake is, add CSS food styling to it and set foodPosition to that cell
     allCells[randomCellIndex].classList.add("food");
     foodPosition = allCells[randomCellIndex].id;
-    console.log(foodPosition);
-    //remove previous foods
+    //remove the previous food CSS styling to make it look like the previous food has disappeared
     for(cell of allCells) {
         if(cell.id !== foodPosition) {
             cell.classList.remove("food");
@@ -61,10 +67,9 @@ function makeFoodAppear() {
     };
 };
 
-makeFoodAppear();
+makeFoodAppear(); //Call the food randomising function at the start so that the player has an initial goal
 
-
-
+//Reset the game for when the player clicks the retry button after losing
 function resetGame() {
     //reset the key variables
     snakeHeadPosition = [10,-10];
@@ -72,7 +77,7 @@ function resetGame() {
     clearInterval(movementIntervals);
     currentCell = [10,-10];
     snakeSegmentPositions = [];
-    snakelength = 3;
+    snakelength = snakeStartingLength;
     gameOver = false;
     //clear the gameScreen visually
     const allCells = document.querySelectorAll(".grid-item");
@@ -84,15 +89,21 @@ function resetGame() {
     gameOverScreen.style.display = "none";
 }
 
+//Change the game state when the player loses
 function setGameOver() {
+    //stop the snake from moving
     gameOver = true;
-    clearInterval(movementIntervals);
-    console.log("Game Over");
-    gameStartScreen.style.display = "none";
+    clearInterval(movementIntervals); 
+    //Change the display to show the gameover screen and player's score
     gameOverScreen.style.display = "initial";
-    scoreText.textContent = `Your score: ${(snakelength - 3) * 100}`;
+    scoreText.textContent = `Your score: ${(snakelength - snakeStartingLength) * scoreMultipler}`;
+    //Gameover SFX
+    loseSFX.play();
+    backgroundSFX.pause();
+    backgroundSFX.currentTime = 0;
 }
 
+//Animate the movement of the snake
 function animateSnake() {
     //check for collisions with boundaries
     if(snakeHeadPosition[0] < 0 || 
@@ -101,61 +112,55 @@ function animateSnake() {
         snakeHeadPosition[1] < -(gridSize - 1)) {
             //gameover
             setGameOver();
-            loseSFX.play();
-            backgroundSFX.pause();
-            backgroundSFX.currentTime = 0;
-    } else {
-        //create the snake trailing animation
-        currentCell = document.getElementById(snakeHeadPosition);
-        currentCell.classList.add("snake");
-        snakeSegmentPositions.unshift(currentCell);
-        const otherCells = document.querySelectorAll(".grid-item");
-        snakeSegmentPositions = snakeSegmentPositions.slice(0, snakelength);
-        for(cell of otherCells) {
-            if(snakeSegmentPositions.includes(cell)) {
-                cell.classList.add("snake");
-            } else {
-                cell.classList.remove("snake");
-            };
-        };
-        //check for collisions with own body
-        for(segment of snakeSegmentPositions.slice(1)) {
-            if(segment.id === snakeHeadPosition.toString()) {
-                //gameover 
-                clearInterval(movementIntervals);
-                setGameOver();
-                loseSFX.play();
-                backgroundSFX.pause();
-                backgroundSFX.currentTime = 0;
-            };
             
-        };
-        //check for collisions with food
-        if(foodPosition === snakeHeadPosition.toString()) {
-            makeFoodAppear();
-            snakelength++;
-            eatFoodSFX.pause(); //this and the next line fixes the audio bug where new audio doesn't play if old audio is still playing (found solution on stack overflow, still need to figure out how it works)
-            eatFoodSFX.currentTime = 0;
-            eatFoodSFX.play();
+    };   
+    //create the snake trailing animation
+    currentCell = document.getElementById(snakeHeadPosition);
+    currentCell.classList.add("snake");
+    snakeSegmentPositions.unshift(currentCell);
+    const otherCells = document.querySelectorAll(".grid-item");
+    snakeSegmentPositions = snakeSegmentPositions.slice(0, snakelength);
+    for(cell of otherCells) {
+        if(snakeSegmentPositions.includes(cell)) {
+            cell.classList.add("snake");
+        } else {
+            cell.classList.remove("snake");
         };
     };
     
-    
-    
+    //check for collisions with own body
+    for(segment of snakeSegmentPositions.slice(1)) {
+        if(segment.id === snakeHeadPosition.toString()) {
+            //gameover 
+            setGameOver();
+        };
+        
+    };
+    //check for collisions with food
+    if(foodPosition === snakeHeadPosition.toString()) {
+        //Make the food appear somewhere else
+        makeFoodAppear();
+        //Increase the snake's length by 1
+        snakelength++;
+        //this and the next lines fixe the audio bug where new audio doesn't play if old audio is still playing (found solution on stack overflow, still need to figure out how it works)
+        eatFoodSFX.pause(); 
+        eatFoodSFX.currentTime = 0;
+        eatFoodSFX.play();
+    }; 
 
 };
 
+//Control the movement of the snake
 function moveSnake(e) {
-    const key = e.key; // "ArrowRight", "ArrowLeft", "ArrowUp", or "ArrowDown"
-    //when up is pressed:
-        //set snakeDirection = "up"
-        //while loop for while snakeDirection === "up", the y coordinates increase by 1 at regular intervals
+    //Store the key pressed by the player
+    const key = e.key; 
     if(!gameOver) {
         //when player first presses an arrow key, remove the start screen
         if(key === "ArrowLeft" || key === "ArrowRight" || key === "ArrowUp" || key === "ArrowDown") {
             gameStartScreen.style.display = "none";
             backgroundSFX.play();
         }
+        //setting the snake's movement and SFX for each key press
         switch (e.key) {
             case "ArrowLeft":
                 // Left pressed
@@ -225,34 +230,8 @@ function moveSnake(e) {
         };
     
     };
-
-    // while (snakeDirection === "left") {
-    //     setTimeout(function() {
-    //         snakeHeadPosition[0] = snakeHeadPosition[0] - 1;
-    //         console.log(snakeHeadPosition);
-    //     }, 100);
-        
-    // };
-
-    //when down is pressed:
-        //set snakeDirection = "down"
-        //while loop for while snakeDirection === "down", the y coordinates decrease by 1 at regular intervals
-    //when left is pressed:
-        //set snakeDirection = "left"
-        //while loop for while snakeDirection === "left", the x coordinates decrease by 1 at regular intervals
-    //when right is pressed:
-        //set snakeDirection = "right"
-        //while loop for while snakeDirection === "right", the x coordinates increase by 1 at regular intervals
-
-}
-
-
+};
 
 /*----------------------------- Event Listeners -----------------------------*/
 document.addEventListener('keydown', moveSnake);
 retryButton.addEventListener("click", resetGame);
-
-
-//when I press an arrow key, I want the snake to move 1 step in that arrow key direction continually
-//this should also update the CSS such that the green lights up wherever the position of the snakehead is i.e its CSS grid coordinates are updated
-// 
