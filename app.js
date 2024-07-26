@@ -12,7 +12,7 @@ const turnVerticalSFX = new Audio("./turnVerticalSFX.mp3");
 turnHorizontalSFX.volume = 0.3;
 turnVerticalSFX.volume = 0.3;
 //Gameplay
-let snakeHeadPosition = [10,-10];
+let snakeHeadPosition = [Math.floor(gridSize/2),-Math.floor(gridSize/2)];
 let snakeDirection = "";
 let movementIntervals;
 let currentCell;
@@ -72,7 +72,7 @@ makeFoodAppear(); //Call the food randomising function at the start so that the 
 //Reset the game for when the player clicks the retry button after losing
 function resetGame() {
     //reset the key variables
-    snakeHeadPosition = [10,-10];
+    snakeHeadPosition = [Math.floor(gridSize/2),-Math.floor(gridSize/2)];
     snakeDirection = "";
     clearInterval(movementIntervals);
     currentCell = [10,-10];
@@ -114,6 +114,16 @@ function animateSnake() {
             setGameOver();
             
     };   
+
+    //check for collisions with own body
+    for(segment of snakeSegmentPositions.slice(1)) {
+        if(segment.id === snakeHeadPosition.toString()) {
+            //gameover 
+            setGameOver();
+        };
+        
+    };
+
     //create the snake trailing animation
     currentCell = document.getElementById(snakeHeadPosition);
     currentCell.classList.add("snake");
@@ -128,14 +138,6 @@ function animateSnake() {
         };
     };
     
-    //check for collisions with own body
-    for(segment of snakeSegmentPositions.slice(1)) {
-        if(segment.id === snakeHeadPosition.toString()) {
-            //gameover 
-            setGameOver();
-        };
-        
-    };
     //check for collisions with food
     if(foodPosition === snakeHeadPosition.toString()) {
         //Make the food appear somewhere else
